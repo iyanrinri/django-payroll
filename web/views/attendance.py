@@ -10,6 +10,7 @@ from ..services.attendance_service import handle_attendance
 
 
 class AttendanceListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
 

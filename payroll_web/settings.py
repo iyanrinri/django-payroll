@@ -133,9 +133,19 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'web.bearer_token_auth.BearerTokenAuthentication',
+        'web.swagger.bearer_token_auth.BearerTokenAuthentication',
     ]
 }
 
-# DRF-YASG Swagger settings for Token Auth
-from .swagger_settings import SWAGGER_SETTINGS
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': 'Bearer <token>',
+        }
+    },
+    'USE_SESSION_AUTH': False,
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'web.swagger_token_schema.TokenAuthAutoSchema',
+}

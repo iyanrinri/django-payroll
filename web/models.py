@@ -67,7 +67,7 @@ class PayrollPeriod(models.Model):
 class Attendance(models.Model):
     clock_date = models.DateField()
     clock_in = models.TimeField()
-    clock_out = models.TimeField()
+    clock_out = models.TimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -20,7 +20,6 @@ from rest_framework import permissions
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from web.swagger_token_schema import TokenAuthAutoSchema
 
 schema_view = get_schema_view(
     openapi.Info(
