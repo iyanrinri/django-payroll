@@ -5,6 +5,7 @@ from .payroll_period_model import PayrollPeriod
 class Reimbursement(models.Model):
     claim_date = models.DateField()
     amount = models.FloatField()
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

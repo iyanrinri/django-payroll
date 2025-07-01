@@ -1,4 +1,6 @@
 from django.urls import path
+
+from .views.claim_view import ReimbursementListCreateView, ReimbursementRetrieveUpdateDestroy
 from .views.employee_view import EmployeeListCreateView, EmployeeRetrieveUpdateDestroy
 from .views.overtime_view import OvertimeListCreateView, OvertimeRetrieveUpdateDestroy
 from .views.payroll_period_view import PayrollPeriodListCreateView, PayrollPeriodRetrieveUpdateDestroy
@@ -18,4 +20,7 @@ urlpatterns = [
 
     path('overtimes/', OvertimeListCreateView.as_view(), name='overtime-list-create'),
     path('overtimes/<int:pk>/', OvertimeRetrieveUpdateDestroy.as_view(), name='overtime-rud'),
+
+    path('reimbursements/', ReimbursementListCreateView.as_view(), name='reimbursement-list-create'),
+    path('reimbursements/<int:pk>/', ReimbursementRetrieveUpdateDestroy.as_view(), name='reimbursement-rud'),
 ]
