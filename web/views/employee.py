@@ -1,6 +1,6 @@
 
 from rest_framework import generics, permissions
-from ..models import User
+from ..models.user_model import User
 from ..permissions.admin_permission import IsAdminOrSuperUser
 from ..serializers.employee_serializer import UserSerializer
 

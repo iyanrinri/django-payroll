@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import PayrollPeriod
+from ..models.payroll_period_model import PayrollPeriod
 
 
 class PayrollPeriodSerializer(serializers.ModelSerializer):

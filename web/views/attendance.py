@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import Attendance
+from ..models.attendance_model import Attendance
 from ..serializers.attendance_serializer import AttendanceSerializer
 from ..services.attendance_service import handle_attendance
 

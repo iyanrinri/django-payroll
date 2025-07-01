@@ -1,7 +1,9 @@
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
-from web.models import Attendance, PayrollPeriod
+from web.models.attendance_model import Attendance
+from web.models.payroll_period_model import PayrollPeriod
+from datetime import datetime
 
 def handle_attendance(user):
     today = timezone.now().date()
@@ -12,13 +14,19 @@ def handle_attendance(user):
     ).first()
 
     if not payroll_period:
-        raise ValidationError({"error":"Tidak ada payroll period yang aktif admin belum menambahkan."})
+        raise ValidationError({"error":"There is no payroll period for today, admin has not created one yet."})
 
-    attendance, created = Attendance.objects.get_or_create(clock_date=today, user=user, defaults={'clock_date': today, 'clock_in': timezone.now(), 'payroll_period': payroll_period})
+    if not today.weekday():
+        raise ValidationError({"error":"Attendance Clock cannot do in weekends."})
 
-    # always update clock-out if not created (exists)
+    attendance, created = Attendance.objects.get_or_create(clock_date=today, user=user, defaults={'clock_date': today, 'clock_in': timezone.now().time(), 'payroll_period': payroll_period})
+    print(created)
     if not created:
-        attendance.clock_out = timezone.now()
+        attendance.clock_out = timezone.now().time()
+        clock_in_dt = datetime.combine(today, attendance.clock_in)
+        clock_out_dt = datetime.combine(today, attendance.clock_out)
+        attendance.duration = clock_out_dt - clock_in_dt
+        print(attendance.duration)
         attendance.save()
 
     return attendance

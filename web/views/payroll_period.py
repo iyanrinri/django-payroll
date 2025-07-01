@@ -2,7 +2,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
-from ..models import PayrollPeriod
+from ..models.payroll_period_model import PayrollPeriod
 from ..permissions.admin_permission import IsAdminOrSuperUser
 from ..serializers.payroll_period_serializer import PayrollPeriodSerializer
 

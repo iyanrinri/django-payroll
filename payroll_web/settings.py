@@ -147,5 +147,5 @@ SWAGGER_SETTINGS = {
         }
     },
     'USE_SESSION_AUTH': False,
-    'DEFAULT_AUTO_SCHEMA_CLASS': 'web.swagger_token_schema.TokenAuthAutoSchema',
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'web.swagger.swagger_token_schema.TokenAuthAutoSchema',
 }
