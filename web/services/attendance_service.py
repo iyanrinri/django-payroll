@@ -25,13 +25,11 @@ def handle_attendance(user):
         raise ValidationError({"error":"Attendance Clock cannot do in weekends."})
 
     attendance, created = Attendance.objects.get_or_create(clock_date=today, user=user, defaults={'clock_date': today, 'clock_in': timezone.now().time(), 'payroll_period': payroll_period})
-    print(created)
     if not created:
         attendance.clock_out = timezone.now().time()
         clock_in_dt = datetime.combine(today, attendance.clock_in)
         clock_out_dt = datetime.combine(today, attendance.clock_out)
         attendance.duration = clock_out_dt - clock_in_dt
-        print(attendance.duration)
         attendance.save()
 
     return attendance
