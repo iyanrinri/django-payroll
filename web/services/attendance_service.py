@@ -5,6 +5,11 @@ from web.models.attendance_model import Attendance
 from web.models.payroll_period_model import PayrollPeriod
 from datetime import datetime
 
+def get_attendance(user):
+    today = timezone.now().date()
+    payroll_period = PayrollPeriod.objects.filter(start_date__lte=today, end_date__gte=today).first()
+    return Attendance.objects.filter(user=user, payroll_period=payroll_period).order_by('-clock_date').all()
+
 def handle_attendance(user):
     today = timezone.now().date()
 

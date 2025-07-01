@@ -6,13 +6,16 @@ from rest_framework.views import APIView
 
 from ..models.attendance_model import Attendance
 from ..serializers.attendance_serializer import AttendanceSerializer
-from ..services.attendance_service import handle_attendance
-
+from ..services.attendance_service import handle_attendance, get_attendance
 
 class AttendanceListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
+
+    def get(self, request, *args, **kwargs):
+        attendance = get_attendance(request.user)
+        serializer = AttendanceSerializer(attendance, many=True)
+        return Response(serializer.data)
 
 class AttendanceClock(APIView):
     permission_classes = [IsAuthenticated]
