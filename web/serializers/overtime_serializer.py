@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
-from ..models import PayrollPeriod
 from ..models.overtime_model import Overtime
-from django.utils import timezone
+from ..services.overtime_service import create_overtime_by_request, validate_hours
+
 
 class OvertimeCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,28 +10,8 @@ class OvertimeCreateUpdateSerializer(serializers.ModelSerializer):
         fields = ['hours']
 
     def create(self, validated_data):
-        today = timezone.now().date()
-
-        payroll_period = PayrollPeriod.objects.filter(
-            start_date__lte=today,
-            end_date__gte=today
-        ).first()
-
-        if not payroll_period:
-            raise ValidationError({"error": "There is no payroll period for today, admin has not created one yet."})
         request = self.context.get('request')
-        user = request.user
-        overtime, created = Overtime.objects.get_or_create(
-            user=user,
-            clock_date=today,
-            payroll_period=payroll_period,
-            defaults={
-                'hours': validated_data['hours']
-            }
-        )
-        if not created:
-            overtime.hours = validated_data['hours']
-            overtime.save()
+        overtime = create_overtime_by_request(request, validated_data)
         return overtime
 
     def update(self, instance, validated_data):
@@ -41,13 +20,7 @@ class OvertimeCreateUpdateSerializer(serializers.ModelSerializer):
         return instance
 
     def validate(self, data):
-        hours = data.get('hours')
-        if hours is None:
-            raise serializers.ValidationError({"hours": "Field Hours is required"})
-        if hours <= 0:
-            raise serializers.ValidationError({"hours": "Field Hours must be greater than 0"})
-        if hours > 3:
-            raise serializers.ValidationError({"hours": "Field Hours maximal is 3 hours"})
+        validate_hours(data.get('hours'))
         return data
 
 class OvertimeSerializer(serializers.ModelSerializer):
@@ -56,28 +29,8 @@ class OvertimeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        today = timezone.now().date()
-
-        payroll_period = PayrollPeriod.objects.filter(
-            start_date__lte=today,
-            end_date__gte=today
-        ).first()
-
-        if not payroll_period:
-            raise ValidationError({"error": "There is no payroll period for today, admin has not created one yet."})
         request = self.context.get('request')
-        user = request.user
-        overtime, created = Overtime.objects.get_or_create(
-            user=user,
-            clock_date=today,
-            payroll_period=payroll_period,
-            defaults={
-                'hours': validated_data['hours']
-            }
-        )
-        if not created:
-            overtime.hours = validated_data['hours']
-            overtime.save()
+        overtime = create_overtime_by_request(request, validated_data)
         return overtime
 
     def update(self, instance, validated_data):
@@ -86,11 +39,5 @@ class OvertimeSerializer(serializers.ModelSerializer):
         return instance
 
     def validate(self, data):
-        hours = data.get('hours')
-        if hours is None:
-            raise serializers.ValidationError({"hours": "Field Hours is required"})
-        if hours <= 0:
-            raise serializers.ValidationError({"hours": "Field Hours must be greater than 0"})
-        if hours > 3:
-            raise serializers.ValidationError({"hours": "Field Hours maximal is 3 hours"})
+        validate_hours(data.get('hours'))
         return data

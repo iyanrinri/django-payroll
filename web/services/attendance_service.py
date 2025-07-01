@@ -5,6 +5,9 @@ from web.models.attendance_model import Attendance
 from web.models.payroll_period_model import PayrollPeriod
 from datetime import datetime
 
+from web.services.payroll_period_service import get_payroll_period
+
+
 def get_attendance(user):
     today = timezone.now().date()
     payroll_period = PayrollPeriod.objects.filter(start_date__lte=today, end_date__gte=today).first()
@@ -13,13 +16,7 @@ def get_attendance(user):
 def handle_attendance(user):
     today = timezone.now().date()
 
-    payroll_period = PayrollPeriod.objects.filter(
-        start_date__lte=today,
-        end_date__gte=today
-    ).first()
-
-    if not payroll_period:
-        raise ValidationError({"error":"There is no payroll period for today, admin has not created one yet."})
+    payroll_period = get_payroll_period()
 
     if not today.weekday():
         raise ValidationError({"error":"Attendance Clock cannot do in weekends."})
