@@ -1,12 +1,20 @@
 from rest_framework import serializers
+
+from ..models import Salary
 from ..models.user_model import User
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
+    salary = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
+
+    def get_salary(self, user):
+        salary = Salary.objects.filter(user=user).order_by('-created_at').first()
+        return salary.amount if salary else None
 
     def create(self, validated_data):
         user = User.objects.create(

@@ -6,12 +6,15 @@ from .views.overtime_view import OvertimeListCreateView, OvertimeRetrieveUpdateD
 from .views.payroll_period_view import PayrollPeriodListCreateView, PayrollPeriodRetrieveUpdateDestroy
 from .views.attendance_view import AttendanceListView, AttendanceClock
 from .views.auth_view import AuthLogin
+from .views.salary_view import SalaryCreateForUserView, SalaryHistoryView
 
 urlpatterns = [
 
     path('auth/login/', AuthLogin.as_view(), name='auth-login'),
     path('employees/', EmployeeListCreateView.as_view(), name='employee-list-create'),
     path('employees/<int:pk>/', EmployeeRetrieveUpdateDestroy.as_view(), name='employee-rud'),
+    path('employees/<int:user_id>/salaries/', SalaryCreateForUserView.as_view(), name='create-employee-salary'),
+    path('employees/<int:user_id>/salaries/history/', SalaryHistoryView.as_view(), name='history-employee-salary'),
     path('payroll-periods/', PayrollPeriodListCreateView.as_view(), name='payroll-list-create'),
     path('payroll-periods/<int:pk>/', PayrollPeriodRetrieveUpdateDestroy.as_view(), name='payroll-rud'),
 
