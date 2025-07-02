@@ -5,13 +5,16 @@ from .views.employee_view import EmployeeListCreateView, EmployeeRetrieveUpdateD
 from .views.overtime_view import OvertimeListCreateView, OvertimeRetrieveUpdateDestroy
 from .views.payroll_period_view import PayrollPeriodListCreateView, PayrollPeriodRetrieveUpdateDestroy
 from .views.attendance_view import AttendanceListView, AttendanceClock
-from .views.auth_view import AuthLogin
+from .views.auth_view import AuthLoginView, AuthLogoutView
 from .views.salary_view import SalaryCreateForUserView, SalaryHistoryView
 from .views.payroll_view import PayrollRunView, PayrollSummaryView
+from .views.user_view import UserView
 
 urlpatterns = [
 
-    path('auth/login/', AuthLogin.as_view(), name='auth-login'),
+    path('auth/login/', AuthLoginView.as_view(), name='auth-login'),
+    path('auth/logout/', AuthLogoutView.as_view(), name='auth-logout'),
+    path('user/', UserView.as_view(), name='user-profile'),
     path('employees/', EmployeeListCreateView.as_view(), name='employee-list-create'),
     path('employees/<int:pk>/', EmployeeRetrieveUpdateDestroy.as_view(), name='employee-rud'),
     path('employees/<int:user_id>/salaries/', SalaryCreateForUserView.as_view(), name='create-employee-salary'),
