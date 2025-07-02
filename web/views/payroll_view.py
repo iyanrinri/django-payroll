@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from ..models import PayrollPeriod
 from ..models.payroll_model import Payroll
 from ..models.user_model import User
 from ..permissions.admin_permission import IsAdminOrSuperUser
@@ -65,8 +66,25 @@ class PayrollSummaryView(APIView):
     serializer_class = PayrollSerializer
     permission_classes = [IsAuthenticated, IsAdminOrSuperUser]
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                'payroll_period_id',
+                openapi.IN_QUERY,
+                description="ID dari payroll period",
+                type=openapi.TYPE_INTEGER,
+                required=False
+            )
+        ],
+        responses={200: PayrollSerializer(many=True)}
+    )
     def get(self, request, *args, **kwargs):
-        payroll_period = get_payroll_period()
+        payroll_period_id = self.kwargs.get('payroll_period_id')
+        if not payroll_period_id:
+            payroll_period = get_payroll_period()
+        else:
+            payroll_period = PayrollPeriod.objects.get(pk=payroll_period_id)
+
         payrolls = Payroll.objects.filter(payroll_period=payroll_period)
         serializer = self.serializer_class(payrolls, many=True)
         return Response(serializer.data)

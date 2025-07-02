@@ -6,6 +6,7 @@ class PayrollPeriodSerializer(serializers.ModelSerializer):
     class Meta:
         model = PayrollPeriod
         fields = '__all__'
+        read_only_fields = ('id', 'processed_at', 'created_at', 'updated_at')
 
     def create(self, validated_data):
         return PayrollPeriod.objects.create(**validated_data)
