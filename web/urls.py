@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views.claim_view import ReimbursementListCreateView, ReimbursementRetrieveUpdateDestroy
+from .views.reimbursement_view import ReimbursementListCreateView, ReimbursementRetrieveUpdateDestroy
 from .views.employee_view import EmployeeListCreateView, EmployeeRetrieveUpdateDestroy
 from .views.overtime_view import OvertimeListCreateView, OvertimeRetrieveUpdateDestroy
 from .views.payroll_period_view import PayrollPeriodListCreateView, PayrollPeriodRetrieveUpdateDestroy

@@ -43,5 +43,7 @@ def run_payroll(users, payroll_period):
             take_home_salary=take_home_salary
         )
 
+        print(f"Payroll for {user.name} created successfully.")
+
     payroll_period.processed_at = timezone.now()
     payroll_period.save()
