@@ -5,3 +5,4 @@ from .overtime_model import Overtime
 from .reimbursement_model import Reimbursement
 from .salary_model import Salary
 from .salary_history_model import SalaryHistory
+from .payroll_model import Payroll

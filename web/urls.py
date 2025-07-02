@@ -7,6 +7,7 @@ from .views.payroll_period_view import PayrollPeriodListCreateView, PayrollPerio
 from .views.attendance_view import AttendanceListView, AttendanceClock
 from .views.auth_view import AuthLogin
 from .views.salary_view import SalaryCreateForUserView, SalaryHistoryView
+from .views.payroll_view import PayrollRunView, PayrollSummaryView
 
 urlpatterns = [
 
@@ -26,4 +27,7 @@ urlpatterns = [
 
     path('reimbursements/', ReimbursementListCreateView.as_view(), name='reimbursement-list-create'),
     path('reimbursements/<int:pk>/', ReimbursementRetrieveUpdateDestroy.as_view(), name='reimbursement-rud'),
+
+    path('payroll/run/', PayrollRunView.as_view(), name='payroll-run'),
+    path('payroll/summary', PayrollSummaryView.as_view(), name='payroll-summary')
 ]
