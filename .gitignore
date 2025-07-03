@@ -42,3 +42,6 @@ Thumbs.db
 
 # Ignore local settings
 local_settings.py
+
+.idea
+*/.idea
