@@ -9,14 +9,15 @@ from web.services.payroll_period_service import get_payroll_period
 def validate_data(data):
     amount = data.get('amount')
     if amount is None:
-        raise ValidationError({"hours": "Field amount is required"})
+        raise ValidationError({"amount": "Field Amount is required"})
     if amount <= 0:
-        raise ValidationError({"hours": "Field Hours must be greater than 0"})
+        raise ValidationError({"amount": "Field Amount must be greater than 0"})
 
     claim_date = data.get('claim_date')
     if claim_date is None:
         raise ValidationError({"claim_date": "Field claim_date is required"})
-    claim_date = data.get('claim_date')
+    if not isinstance(claim_date, date):
+        raise ValidationError({"claim_date": "Field claim_date not valid format, use YYYY-MM-DD"})
 
     if isinstance(claim_date, str):
         try:
@@ -28,14 +29,11 @@ def validate_data(data):
 
 
 def create_reimbursement_by_request(request, validated_data: dict):
-    today = timezone.now().date()
-
     payroll_period = get_payroll_period()
-
     user = request.user
     reimbursement = Reimbursement.objects.create(
         user=user,
-        claim_date=today,
+        claim_date=validated_data['claim_date'],
         payroll_period=payroll_period,
         amount=validated_data['amount'],
         description=validated_data['description']
