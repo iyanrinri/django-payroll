@@ -3,10 +3,12 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg import openapi
 
 from ..models.attendance_model import Attendance
 from ..serializers.attendance_serializer import AttendanceSerializer
-from ..services.attendance_service import handle_attendance, get_attendance
+from ..services.attendance_service import handle_attendance, get_attendance, get_current_attendance
+
 
 class AttendanceListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -16,6 +18,44 @@ class AttendanceListView(generics.ListAPIView):
         attendance = get_attendance(request.user)
         serializer = AttendanceSerializer(attendance, many=True)
         return Response(serializer.data)
+
+
+class AttendanceCurrentView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AttendanceSerializer
+    filter_backends = []
+    pagination_class = None
+
+    @swagger_auto_schema(
+        operation_description="Get the current attendance for the authenticated user.",
+        manual_parameters=[],
+        responses={
+            200: openapi.Response(
+                description="OK",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'data': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                "id": openapi.Schema(type=openapi.TYPE_INTEGER),
+                                "clock_date": openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE),
+                                "clock_in": openapi.Schema(type=openapi.TYPE_STRING),
+                                "clock_out": openapi.Schema(type=openapi.TYPE_STRING, nullable=True),
+                            }
+                        )
+                    }
+                )
+            )
+        }
+    )
+    def get(self, request, *args, **kwargs):
+        attendance = get_current_attendance(request.user)
+        if not attendance:
+            return Response({'data': None})
+        serializer = self.get_serializer(attendance)
+        return Response({'data': serializer.data})
+
 
 class AttendanceClock(APIView):
     permission_classes = [IsAuthenticated]

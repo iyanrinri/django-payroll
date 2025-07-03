@@ -4,7 +4,7 @@ from .views.reimbursement_view import ReimbursementListCreateView, Reimbursement
 from .views.employee_view import EmployeeListCreateView, EmployeeRetrieveUpdateDestroy
 from .views.overtime_view import OvertimeListCreateView, OvertimeRetrieveUpdateDestroy
 from .views.payroll_period_view import PayrollPeriodListCreateView, PayrollPeriodRetrieveUpdateDestroy
-from .views.attendance_view import AttendanceListView, AttendanceClock
+from .views.attendance_view import AttendanceListView, AttendanceClock, AttendanceCurrentView
 from .views.auth_view import AuthLoginView, AuthLogoutView
 from .views.salary_view import SalaryCreateForUserView, SalaryHistoryView
 from .views.payroll_view import PayrollRunView, PayrollSummaryView
@@ -23,7 +23,8 @@ urlpatterns = [
     path('payroll-periods/<int:pk>/', PayrollPeriodRetrieveUpdateDestroy.as_view(), name='payroll-rud'),
 
     path('attendance/', AttendanceListView.as_view(), name='attendance-list'),
-    path('attendance/clock', AttendanceClock.as_view(), name='attendance-clock'),
+    path('attendance/current/', AttendanceCurrentView.as_view(), name='attendance-current'),
+    path('attendance/clock/', AttendanceClock.as_view(), name='attendance-clock'),
 
     path('overtimes/', OvertimeListCreateView.as_view(), name='overtime-list-create'),
     path('overtimes/<int:pk>/', OvertimeRetrieveUpdateDestroy.as_view(), name='overtime-rud'),

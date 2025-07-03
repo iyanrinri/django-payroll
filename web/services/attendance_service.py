@@ -7,6 +7,10 @@ from datetime import datetime
 
 from web.services.payroll_period_service import get_payroll_period
 
+def get_current_attendance(user):
+    today = timezone.now().date()
+    payroll_period = PayrollPeriod.objects.filter(start_date__lte=today, end_date__gte=today).first()
+    return Attendance.objects.filter(user=user, payroll_period=payroll_period, clock_date=today).first()
 
 def get_attendance(user):
     today = timezone.now().date()

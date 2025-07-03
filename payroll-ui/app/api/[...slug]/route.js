@@ -20,10 +20,18 @@ async function forwardRequest(req, pathName) {
     if (token) {
         headers.set('Authorization', `Bearer ${token}`);
     }
+    let body = null
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+        const reqBody = await req.text()
+        console.log(reqBody)
+        if (reqBody) {
+            body = reqBody;
+        }
+    }
     const response = await fetch(url, {
         method: req.method,
         headers: headers,
-        body: req.method !== 'GET' && req.method !== 'HEAD' ? await req.text() : null,
+        body: body,
     });
 
     return new NextResponse(response.body, {
