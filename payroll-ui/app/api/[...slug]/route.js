@@ -4,8 +4,8 @@ import {cookies} from "next/headers";
 const BACKEND_API_URL = process.env.BACKEND_API_URL || "http://localhost:8000";
 
 async function forwardRequest(req, pathName) {
-    pathName = pathName.replace(/^\/api\//, '/');
-    const url = new URL(`${BACKEND_API_URL}/${pathName}/`);
+    // pathName = pathName.replace(/^\/api\//, '/');
+    const url = new URL(`${BACKEND_API_URL}/api/${pathName}/`);
     if (req.method === 'GET' || req.method === 'HEAD') {
         url.search = req.nextUrl.searchParams.toString();
     }
@@ -16,9 +16,8 @@ async function forwardRequest(req, pathName) {
     headers.delete('host');
     headers.delete('cookie');
     headers.delete('authorization');
-    console.log("token", token);
-    console.log(headers);
 
+    console.log(`Forwarding request to: ${url.toString()}`);
     const publicPaths = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
     if (!publicPaths.some(path => url.pathname.includes(path))) {
         if (token) {

@@ -1,6 +1,9 @@
 import {Geist, Geist_Mono} from "next/font/google";
 import "../globals.css";
 import SidebarNav from "@/components/sidebar-nav";
+import {cookies} from "next/headers";
+import AuthClient from "@/components/auth-clientl";
+import {redirect} from "next/navigation";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -17,9 +20,10 @@ export const metadata = {
     description: "Payroll App - Manage your payroll efficiently",
 };
 
-export default function MainLayout({children}) {
+export default async function MainLayout({children}) {
     return (
         <>
+            <AuthClient />
             <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar"
                     aria-controls="default-sidebar" type="button"
                     className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
