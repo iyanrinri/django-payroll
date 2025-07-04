@@ -125,13 +125,13 @@ export default function SidebarNav() {
             </li>
             <li>
                 <button disabled={loading} onClick={() => handleLogout()}
-                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                   className="flex items-center justify-start p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group w-full">
                     <svg className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                               d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
                     </svg>
-                    <span className="flex-1 ms-3 whitespace-nowrap">{loading ? 'Logging out..' : 'Logout'}</span>
+                    <span className="ml-2 whitespace-nowrap">{loading ? 'Logging out..' : 'Logout'}</span>
                 </button>
             </li>
         </ul>

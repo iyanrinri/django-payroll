@@ -16,9 +16,14 @@ async function forwardRequest(req, pathName) {
     headers.delete('host');
     headers.delete('cookie');
     headers.delete('authorization');
+    console.log("token", token);
+    console.log(headers);
 
-    if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
+    const publicPaths = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
+    if (!publicPaths.some(path => url.pathname.includes(path))) {
+        if (token) {
+            headers.set('Authorization', `Bearer ${token}`);
+        }
     }
     let body = null
     if (req.method !== 'GET' && req.method !== 'HEAD') {

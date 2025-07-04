@@ -1,40 +1,40 @@
 import {useEffect, useState} from "react";
 import {toast} from "react-hot-toast";
 import Pagination from "@/components/pagination";
-import ReimbursementForm from "@/app/reimbursements/components/form";
-import ConfirmDeletion from "@/components/confirm_deletion";
+import ConfirmDeletion from "@/components/confirm-deletion";
+import EmployeeForm from "@/app/(main)/employees/components/form";
 
-export default function ReimbursementList({refreshKey}) {
-    const [reimbursementData, setReimbursementData] = useState(null);
+export default function EmployeeList({refreshKey}) {
+    const [itemData, setItemData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
-    const [selectedReimbursement, setSelectedReimbursement] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
     const [showFormModal, setShowFormModal] = useState(false);
     const [confirmationDelete, setConfirmationDelete] = useState(false);
     const [message, setMessage] = useState('');
 
-    const handleEdit = (reimbursement) => {
-        setSelectedReimbursement(reimbursement);
+    const handleEdit = (item) => {
+        setSelectedItem(item);
         setShowFormModal(true)
     }
     const onSubmit = () => {
         setShowFormModal(false);
-        setSelectedReimbursement(null);
+        setSelectedItem(null);
         setPage(1);
-        fetchReimbursements();
+        fetchItems();
     }
 
-    const showConfirmation = (reimbursement) => {
-        setSelectedReimbursement(reimbursement);
-        setMessage(`Are you sure you want to delete the reimbursement for: ${reimbursement.claim_date_display} with amount ${reimbursement.amount_display} description: ${reimbursement.description || 'N/A'}?`);
+    const showConfirmation = (item) => {
+        setSelectedItem(item);
+        setMessage(`Are you sure you want to delete the item for: ${item.clock_date_display} with employee: "${item.hours} hours" ?`);
         setConfirmationDelete(true);
     }
 
     const handleDelete = async () => {
         try {
-            const response = await fetch(`/api/reimbursements/${selectedReimbursement.id}`, {
+            const response = await fetch(`/api/employees/${selectedItem.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -42,21 +42,21 @@ export default function ReimbursementList({refreshKey}) {
             });
 
             if (!response.ok) {
-                toast.error('Failed to delete reimbursement');
+                toast.error('Failed to delete item');
                 return;
             }
 
-            toast.success('Reimbursement deleted successfully');
-            fetchReimbursements();
+            toast.success('Item deleted successfully');
+            fetchItems();
         } catch (error) {
             toast.error('Network error');
         } finally {
         }
     }
-    const fetchReimbursements = async () => {
+    const fetchItems = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/reimbursements?page=${page}`, {
+            const response = await fetch(`/api/employees?paginated=1&page=${page}`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -69,7 +69,7 @@ export default function ReimbursementList({refreshKey}) {
             }
 
             const data = await response.json();
-            setReimbursementData(data);
+            setItemData(data);
             setPerPage(data.per_page || 10);
             setTotalItems(data.count || 0);
         } catch (error) {
@@ -86,54 +86,47 @@ export default function ReimbursementList({refreshKey}) {
     };
 
     useEffect(() => {
-        fetchReimbursements();
+        fetchItems();
     }, [page, refreshKey]);
 
     return (
         <div className="relative overflow-x-auto">
             {showFormModal && (
-                <ReimbursementForm reimbursement={selectedReimbursement} onClose={() => setShowFormModal(false)} onSubmit={onSubmit} />
+                <EmployeeForm item={selectedItem} onClose={() => setShowFormModal(false)} onSubmit={onSubmit} />
             )}
             {confirmationDelete && (
                 <ConfirmDeletion message={message} onConfirm={handleDelete} onCancel={() => {
                     setConfirmationDelete(false);
-                    setSelectedReimbursement(null);
+                    setSelectedItem(null);
                 }} />
             )}
 
-            {reimbursementData && reimbursementData?.count > 0 && !loading ? (
-                <div className="py-4">
-                    <span>Total Claimed Amount: <span
-                        className="font-bold">{reimbursementData.total_amount_display}</span></span>
-                </div>
-            ) : null}
-
             {loading ? (
-                'fetching data reimbursements...'
+                'fetching data items...'
             ) : (
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th className="px-6 py-3">Claim Date</th>
-                        <th className="px-6 py-3">Amount</th>
-                        <th className="px-6 py-3">Description</th>
+                        <th className="px-6 py-3">Name</th>
+                        <th className="px-6 py-3">Email</th>
+                        <th className="px-6 py-3">Base Salary</th>
                         <th className="px-6 py-3">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {reimbursementData && reimbursementData.results.map((reimbursement, index) => (
+                    {itemData && itemData.results.map((item, index) => (
                         <tr key={index}
                             className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                             <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {reimbursement.claim_date_display || 'N/A'}
+                                {item.name || 'N/A'}
                             </td>
-                            <td className="px-6 py-4">{reimbursement.amount_display || 'N/A'}</td>
-                            <td className="px-6 py-4">{reimbursement.description || 'N/A'}</td>
+                            <td className="px-6 py-4">{item.email || 'N/A'}</td>
+                            <td className="px-6 py-4">{item.salary || 'N/A'}</td>
                             <td className="px-6 py-4">
                                 <div className="flex items-center space-x-2">
                                     <button
                                         onClick={() => {
-                                            handleEdit(reimbursement);
+                                            handleEdit(item);
                                         }}
                                         className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 cursor-pointer"
                                     >
@@ -141,7 +134,7 @@ export default function ReimbursementList({refreshKey}) {
                                     </button>
                                     <button
                                         onClick={() => {
-                                            showConfirmation(reimbursement);
+                                            showConfirmation(item);
                                         }}
                                         className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 cursor-pointer"
                                     >

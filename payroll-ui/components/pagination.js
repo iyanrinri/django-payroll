@@ -4,12 +4,42 @@ export default function Pagination({ page, perPage, total, onChangePage }) {
     const [pageNumbers, setPageNumbers] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
 
+    const getVisiblePages = (current, total)=>  {
+        const delta = 1;
+        const range = [];
+        const rangeWithDots = [];
+        let l;
+
+        for (let i = 1; i <= total; i++) {
+            if (
+                i === 1 ||
+                i === total ||
+                (i >= current - delta && i <= current + delta)
+            ) {
+                range.push(i);
+            }
+        }
+
+        for (let i of range) {
+            if (l) {
+                if (i - l === 2) {
+                    rangeWithDots.push(l + 1);
+                } else if (i - l > 2) {
+                    rangeWithDots.push("...");
+                }
+            }
+            rangeWithDots.push(i);
+            l = i;
+        }
+
+        return rangeWithDots;
+    }
+
     useEffect(() => {
         const totalPage = Math.ceil(total / perPage);
-        const numbers = Array.from({ length: totalPage }, (_, i) => i + 1);
-        setPageNumbers(numbers);
+        setPageNumbers(getVisiblePages(page, totalPage));
         setTotalPage(totalPage);
-    }, [total, perPage]);
+    }, [total, perPage, page]);
 
     return (
         <div className="flex flex-wrap items-center justify-between mt-4 gap-2">
@@ -22,18 +52,22 @@ export default function Pagination({ page, perPage, total, onChangePage }) {
             </button>
 
             <ul className="inline-flex space-x-1">
-                {pageNumbers.map((p) => (
-                    <li key={p}>
-                        <button
-                            onClick={() => onChangePage(p)}
-                            className={`cursor-pointer px-3 h-8 text-sm rounded border border-gray-300 ${
-                                p === page
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                            }`}
-                        >
-                            {p}
-                        </button>
+                {pageNumbers.map((p, i) => (
+                    <li key={i}>
+                        {p === "..." ? (
+                            <span className="px-3 h-8 text-sm text-gray-500">...</span>
+                        ) : (
+                            <button
+                                onClick={() => onChangePage(p)}
+                                className={`cursor-pointer px-3 h-8 text-sm rounded border border-gray-300 ${
+                                    p === page
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                                }`}
+                            >
+                                {p}
+                            </button>
+                        )}
                     </li>
                 ))}
             </ul>

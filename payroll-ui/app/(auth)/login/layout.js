@@ -1,6 +1,5 @@
 import {Geist, Geist_Mono} from "next/font/google";
-import "../globals.css";
-import {Toaster} from "react-hot-toast";
+import "../../globals.css";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -17,15 +16,8 @@ export const metadata = {
     description: "Payroll App - Manage your payroll efficiently",
 };
 
-export default function RootLayout({children}) {
+export default function LoginLayout({children}) {
     return (
-        <html lang="en">
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-        <Toaster></Toaster>
-        {children}
-        </body>
-        </html>
+        <section>{children}</section>
     );
 }

@@ -1,6 +1,5 @@
 from datetime import datetime, date
 
-from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from web.models import Reimbursement

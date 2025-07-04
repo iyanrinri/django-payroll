@@ -24,9 +24,13 @@ class OvertimeCreateUpdateSerializer(serializers.ModelSerializer):
         return data
 
 class OvertimeSerializer(serializers.ModelSerializer):
+    clock_date_display = serializers.SerializerMethodField()
     class Meta:
         model = Overtime
         fields = '__all__'
+
+    def get_clock_date_display(self, obj):
+        return obj.clock_date.strftime('%a, %d %B %Y')
 
     def create(self, validated_data):
         request = self.context.get('request')

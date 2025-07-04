@@ -14,18 +14,20 @@ def validate_hours(hours):
 
 def create_overtime_by_request(request, validated_data: dict):
     today = timezone.now().date()
-
     payroll_period = get_payroll_period()
-
     user = request.user
-    overtime, created = Overtime.objects.get_or_create(
+
+    query_set = Overtime.objects.filter(user=user, clock_date=today, payroll_period=payroll_period)
+    if query_set.exists():
+        overtime = query_set.first()
+        overtime.hours = validated_data['hours']
+        overtime.save()
+        return overtime
+
+    overtime = Overtime.objects.create(
         user=user,
         clock_date=today,
         payroll_period=payroll_period,
-        defaults={
-            'hours': validated_data['hours']
-        }
+        hours=validated_data['hours']
     )
-    if not created:
-        overtime.hours = validated_data['hours']
-        overtime.save()
+    return overtime

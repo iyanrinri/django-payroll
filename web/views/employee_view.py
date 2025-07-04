@@ -13,6 +13,14 @@ class CustomPagination(PageNumberPagination):
     page_size_query_param = 'per_page'
     max_page_size = 100
 
+    def get_paginated_response(self, data):
+        return Response({
+            'count': self.page.paginator.count,
+            'page': self.page.number,
+            'per_page': self.page.paginator.per_page,
+            'results': data
+        })
+
 class EmployeeListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer

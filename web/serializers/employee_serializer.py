@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_salary(self, user):
         salary = Salary.objects.filter(user=user).order_by('-created_at').first()
-        return salary.amount if salary else None
+        return "{:,.2f}".format(salary.amount) if salary else None
 
     def create(self, validated_data):
         user = User.objects.create(
